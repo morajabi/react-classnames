@@ -1,42 +1,45 @@
-(function () {
+(function() {
+	const isModule = (typeof module !== 'undefined' && module.exports);
+	const isAMD = (typeof define === 'function' && define.amd);
 
-  var hasOwn = {}.hasOwnProperty;
-
-  function ReactClassNames() {
-    var finalClassList = [];
-    for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-      if (!arg) continue;
-
-      var typoOfArg = typeof arg;
-
-      if (typoOfArg === 'string' || typoOfArg === 'number') {
-        finalClassList.push(arg);
-      } else if (arg.constructor === Array) {
-        // Array
-        finalClassList.push(ReactClassNames.apply(null, arg));
-      } else if (arg !== null && typoOfArg === 'object') {
-        // Object
-        for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-            finalClassList.push(key);
-					}
-				}
-      }
-
-    }
-
-    return finalClassList.join(' ');
-  }
-
-  if (typeof module !== 'undefined' && module.exports) {
+	if (isModule) { // CommonJS module is defined
 		module.exports = ReactClassNames;
-	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-		define('classnames', [], function () {
+	} else if (isAMD) { // Global define
+		define('classNames', [], function() {
 			return ReactClassNames;
 		});
-	} else {
+	} else { // Global variable
 		window.ReactClassNames = ReactClassNames;
 	}
-
 }());
+
+
+/**
+ * ReactClassNames [Manage classNames conditionally]
+ */
+function ReactClassNames(...params) {
+	const className = [];
+	// const hasOwnClass = {}.hasOwnProperty;
+
+	for (let i = 0; i < params.length; i++) {
+		const param = params[i];
+		const typoOfArg = typeof(param);
+		if (!param) continue;
+
+		if (typoOfArg === 'string' || typoOfArg === 'number') {
+			className.push(param);
+		} else if (param.constructor === Array) {
+			className.push(ReactClassNames.apply(null, param));
+		} else if (typoOfArg === 'object') {
+			for (let key in param) {
+				if (param[key]) {
+					className.push(key);
+				}
+				// if (hasOwnClass.call(param, key) && param[key]) {
+				// 	className.push(key);
+				// }
+			}
+		}
+	}
+	return className.join(' ');
+}
