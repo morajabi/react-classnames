@@ -35,6 +35,10 @@ Or in ES6 syntax:
 ```
 Oh, It's very hard to read. But with rc-classnames those days are gone! It's intelligent! You can give it classNames in **Any Format** you want and it will generate a neat classname for you. Let's see how can we implement our button with rc-classnames:
 ```js
+// ES6+:
+import c from 'react-classnames';
+
+// ES5
 var c = require('react-classnames');
 
 <button className={c('button', {
